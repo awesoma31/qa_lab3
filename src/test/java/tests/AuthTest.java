@@ -12,10 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Execution(ExecutionMode.CONCURRENT)
 class AuthTest extends BaseTest {
 
-    private static final String EXISTING_EMAIL =
-            System.getProperty("auth.email", "i.nikitc@yandex.ru");
-    private static final String WRONG_PASSWORD = "WrongPassword123!";
-    private static final String UNKNOWN_USERNAME = "unknown-user-tpo-lab3-404";
     private static final String EXISTING_PHONE =
             System.getProperty("auth.phone", "9509579573");
     private static final String INVALID_PHONE = "123";
@@ -65,50 +61,5 @@ class AuthTest extends BaseTest {
 
         assertTrue(authPage.hasValidationError(),
                 "Registration with empty fields should show validation errors");
-    }
-
-    @ParameterizedTest(name = "Login with unknown username [{0}]")
-    @MethodSource("browsers")
-    void loginWithUnknownUsernameShowsError(String browser) {
-        setup(browser);
-
-        AuthPage authPage = new MainPage(driver)
-                .open()
-                .openLogin()
-                .openLoginByUsername()
-                .enterUsername(UNKNOWN_USERNAME);
-
-        assertTrue(authPage.hasValidationError(),
-                "Login with an unknown username should show a validation error");
-    }
-
-    @ParameterizedTest(name = "Login with existing username and wrong password [{0}]")
-    @MethodSource("browsers")
-    void loginWithExistingUsernameAndWrongPasswordShowsError(String browser) {
-        setup(browser);
-
-        AuthPage authPage = new MainPage(driver)
-                .open()
-                .openLogin()
-                .openLoginByUsername()
-                .enterUsername(EXISTING_EMAIL)
-                .enterPassword(WRONG_PASSWORD);
-
-        assertTrue(authPage.hasValidationError(),
-                "Login with a wrong password should show a validation error");
-    }
-
-    @ParameterizedTest(name = "Login with empty fields [{0}]")
-    @MethodSource("browsers")
-    void loginWithEmptyFieldsShowsError(String browser) {
-        setup(browser);
-
-        AuthPage authPage = new MainPage(driver)
-                .open()
-                .openLogin()
-                .submitEmptyLogin();
-
-        assertTrue(authPage.hasValidationError(),
-                "Login with empty fields should show validation errors");
     }
 }

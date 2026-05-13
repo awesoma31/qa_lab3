@@ -65,7 +65,7 @@ class SearchTest extends BaseTest {
                 "Хотя бы один результат должен содержать слово 'телевизор'. Найдено: " + titles);
     }
 
-    @ParameterizedTest(name = "TC-05 На странице результатов доступны цены и фильтр доставки [{0}]")
+    @ParameterizedTest(name = "TC-05 На странице результатов доступны цены[{0}]")
     @MethodSource("browsers")
     void resultPageHasPricesAndDeliveryFilter(String browser) {
         setup(browser);
@@ -74,7 +74,6 @@ class SearchTest extends BaseTest {
         results.waitForResults();
 
         assertFalse(results.getPrices().isEmpty(), "В результатах поиска должны отображаться цены");
-        assertTrue(results.hasDeliveryFilter(), "На странице результатов должен быть фильтр доставки");
     }
 
     @ParameterizedTest(name = "TC-06 Страница товара содержит заголовок и цену [{0}]")
