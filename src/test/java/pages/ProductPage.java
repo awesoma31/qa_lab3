@@ -24,9 +24,10 @@ public class ProductPage extends BasePage {
             "//button[@data-auto='cartButton']" +
             " | //button[contains(normalize-space(.),'В корзину')]"
     );
-    private static final By CART_LINK = By.xpath(
-            "//a[contains(@href,'/my/cart')]" +
-            " | //a[contains(normalize-space(.),'Корзина')]"
+    private static final By TOAST = By.xpath("//*[@data-auto='toasterContent']");
+    private static final By TOAST_CART_LINK = By.xpath(
+            "//*[@data-auto='toasterContent']//a[contains(normalize-space(.),'орзин')]" +
+            " | //*[@data-auto='toasterContent']//button[contains(normalize-space(.),'орзин')]"
     );
     private static final By RATING = By.xpath(
             "//div[@data-auto='rating-value']" +
@@ -97,13 +98,26 @@ public class ProductPage extends BasePage {
         return isPresent(ADD_TO_CART);
     }
 
-    public CartPage addToCart() {
-        waitClickable(ADD_TO_CART).click();
-        if (isPresent(CART_LINK)) {
-            waitClickable(CART_LINK).click();
+    public boolean clickAddToCartAndWaitResponse() {
+        WebElement btn = waitClickable(ADD_TO_CART);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", btn);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        try {
+            shortWait.until(ExpectedConditions.presenceOfElementLocated(TOAST));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public CartPage navigateToCart() {
+        clickIfPresent(TOAST_CART_LINK);
+        if (!driver.getCurrentUrl().contains("cart")) {
+            driver.get("https://market.yandex.ru/mf-cart");
         }
         return new CartPage(driver);
     }
+
 
     public boolean hasRating() {
         return isPresent(RATING);

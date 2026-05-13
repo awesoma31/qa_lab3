@@ -21,7 +21,7 @@ class AuthTest extends BaseTest {
     @ParameterizedTest(name = "Registration with existing phone [{0}]")
     @MethodSource("browsers")
     void registrationWithExistingPhoneShowsError(String browser) {
-        setup(browser);
+        setupFresh(browser);
 
         AuthPage authPage = new MainPage(driver)
                 .open()
@@ -36,7 +36,7 @@ class AuthTest extends BaseTest {
     @ParameterizedTest(name = "Registration with invalid phone [{0}]")
     @MethodSource("browsers")
     void registrationWithInvalidPhoneShowsError(String browser) {
-        setup(browser);
+        setupFresh(browser);
 
         AuthPage authPage = new MainPage(driver)
                 .open()
@@ -51,7 +51,7 @@ class AuthTest extends BaseTest {
     @ParameterizedTest(name = "Registration with empty fields [{0}]")
     @MethodSource("browsers")
     void registrationWithEmptyFieldsShowsError(String browser) {
-        setup(browser);
+        setupFresh(browser);
 
         AuthPage authPage = new MainPage(driver)
                 .open()
