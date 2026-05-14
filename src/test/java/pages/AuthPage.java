@@ -221,17 +221,44 @@ public class AuthPage extends BasePage {
         return this;
     }
 
-    // Яндекс сначала показывает код для приложения; через ~30 сек появляется "Resend code"
+    public boolean waitForPushOrSmsFlow(int totalTimeoutSeconds) {
+        WebDriverWait phase1 = new WebDriverWait(driver, Duration.ofSeconds(90));
+        try {
+            phase1.until(ExpectedConditions.or(
+                    d -> !d.getCurrentUrl().contains("passport.yandex"),
+                    ExpectedConditions.elementToBeClickable(RESEND_BUTTON)
+            ));
+        } catch (Exception e) {
+            return false;
+        }
+
+        if (!driver.getCurrentUrl().contains("passport.yandex")) {
+            return true;
+        }
+
+        waitClickable(RESEND_BUTTON).click();
+        WebDriverWait menuWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        menuWait.until(ExpectedConditions.elementToBeClickable(SMS_MENU_OPTION)).click();
+
+        System.out.println(">>> SMS-код отправлен. Введите его в браузере...");
+
+        WebDriverWait phase3 = new WebDriverWait(driver, Duration.ofSeconds(totalTimeoutSeconds));
+        try {
+            phase3.until(d -> !d.getCurrentUrl().contains("passport.yandex"));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public AuthPage waitForSmsButtonAndClick() {
         WebDriverWait resendWait = new WebDriverWait(driver, Duration.ofSeconds(90));
         resendWait.until(ExpectedConditions.elementToBeClickable(RESEND_BUTTON)).click();
-        // После клика появляется меню — выбираем "via SMS"
         WebDriverWait menuWait = new WebDriverWait(driver, Duration.ofSeconds(10));
         menuWait.until(ExpectedConditions.elementToBeClickable(SMS_MENU_OPTION)).click();
         return this;
     }
 
-    // Ждём пока пользователь вручную введёт код и страница уйдёт с passport
     public boolean waitForManualLogin(int timeoutSeconds) {
         WebDriverWait longWait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
         try {

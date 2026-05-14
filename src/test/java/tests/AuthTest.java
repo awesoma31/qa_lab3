@@ -17,7 +17,6 @@ class AuthTest extends BaseTest {
     private static final String INVALID_PHONE = "123";
 
 
-    //TODO: иногда всплывает окно для кого хотите создать аккаунт. надо пофиксить
     @ParameterizedTest(name = "Registration with existing phone [{0}]")
     @MethodSource("browsers")
     void registrationWithExistingPhoneShowsError(String browser) {

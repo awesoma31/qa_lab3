@@ -7,18 +7,13 @@ import pages.MainPage;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Тест успешной авторизации по SMS.
- * Запускать отдельно: mvn test -Dtest=LoginTest
- * Во время теста необходимо вручную ввести код из SMS в открывшемся браузере.
- */
 class LoginTest extends BaseTest {
 
     private static final String PHONE = "9115624293"; // +7 уже предзаполнен в поле
 
-    @ParameterizedTest(name = "Успешная авторизация по SMS [{0}]")
+    @ParameterizedTest(name = "Успешная авторизация по коду [{0}]")
     @MethodSource("firefoxOnly")
-    void loginWithSmsCode(String browser) {
+    void loginWithCode(String browser) {
         setupFresh(browser);
 
         AuthPage auth = new MainPage(driver)
@@ -26,13 +21,9 @@ class LoginTest extends BaseTest {
                 .openLogin()
                 .enterPhoneAndSubmit(PHONE);
 
-        // Яндекс сначала предлагает код из приложения — ждём кнопку "по SMS" до 90 сек
-        auth.waitForSmsButtonAndClick();
+        System.out.println(">>> Введите push-код если пришёл, или ждите — тест переключится на SMS автоматически...");
+        boolean loggedIn = auth.waitForPushOrSmsFlow(300);
 
-        // Ждём ручного ввода кода пользователем — до 5 минут
-        System.out.println(">>> Введите SMS-код в браузере. Ожидание до 5 минут...");
-        boolean loggedIn = auth.waitForManualLogin(300);
-
-        assertTrue(loggedIn, "После ввода SMS-кода должна произойти успешная авторизация");
+        assertTrue(loggedIn, "После ввода кода должна произойти успешная авторизация");
     }
 }
