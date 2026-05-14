@@ -6,7 +6,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class AuthPage extends BasePage {
@@ -93,6 +95,18 @@ public class AuthPage extends BasePage {
             "//input[@name='code' or @type='tel' or @inputmode='numeric']" +
             " | //*[contains(normalize-space(.),'\u043A\u043E\u0434') or contains(normalize-space(.),'\u041A\u043E\u0434')]" +
             " | //*[contains(normalize-space(.),'SMS') or contains(normalize-space(.),'\u0441\u043C\u0441')]"
+    );
+    private static final By RESEND_BUTTON = By.xpath(
+            "//button[contains(normalize-space(.),'Resend')]" +
+            " | //button[contains(normalize-space(.),'Отправить ещё раз')]" +
+            " | //button[contains(normalize-space(.),'Отправить еще раз')]" +
+            " | //button[contains(normalize-space(.),'Выслать код')]" +
+            " | //button[contains(normalize-space(.),'выслать код')]" +
+            " | //button[contains(normalize-space(.),'resend')]"
+    );
+    private static final By SMS_MENU_OPTION = By.xpath(
+            "//*[contains(normalize-space(.),'SMS') or contains(normalize-space(.),'СМС')]" +
+            "[self::button or self::a or self::li or @role='menuitem' or @role='option']"
     );
     private static final By ACCOUNT_MARKER = By.xpath(
             "//*[contains(@data-t,'account')]" +
@@ -195,6 +209,33 @@ public class AuthPage extends BasePage {
                     ExpectedConditions.numberOfElementsToBeMoreThan(ERROR, 0),
                     ExpectedConditions.numberOfElementsToBeMoreThan(SMS_CODE, 0)
             ));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public AuthPage enterPhoneAndSubmit(String phone) {
+        typeInto(PHONE_INPUT, PHONE_FIELD, phone);
+        submit();
+        return this;
+    }
+
+    // Яндекс сначала показывает код для приложения; через ~30 сек появляется "Resend code"
+    public AuthPage waitForSmsButtonAndClick() {
+        WebDriverWait resendWait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        resendWait.until(ExpectedConditions.elementToBeClickable(RESEND_BUTTON)).click();
+        // После клика появляется меню — выбираем "via SMS"
+        WebDriverWait menuWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        menuWait.until(ExpectedConditions.elementToBeClickable(SMS_MENU_OPTION)).click();
+        return this;
+    }
+
+    // Ждём пока пользователь вручную введёт код и страница уйдёт с passport
+    public boolean waitForManualLogin(int timeoutSeconds) {
+        WebDriverWait longWait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+        try {
+            longWait.until(driver -> !driver.getCurrentUrl().contains("passport.yandex"));
             return true;
         } catch (Exception e) {
             return false;
