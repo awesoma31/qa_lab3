@@ -315,7 +315,7 @@ public class AuthPage extends BasePage {
                     input = waitClickable(inputLocator);
                 }
 
-                input.click();
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", input);
                 input.clear();
                 input.sendKeys(value);
                 return;
