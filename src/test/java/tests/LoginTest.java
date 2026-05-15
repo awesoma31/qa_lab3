@@ -21,7 +21,7 @@ class LoginTest extends BaseTest {
                 .openLogin()
                 .enterPhoneAndSubmit(PHONE);
 
-        System.out.println(">>> Введите push-код если пришёл, или ждите — тест переключится на SMS автоматически...");
+        System.out.println("Введите push-код если пришёл, или ждите - тест переключится на SMS автоматически...");
         boolean loggedIn = auth.waitForPushOrSmsFlow(300);
 
         assertTrue(loggedIn, "После ввода кода должна произойти успешная авторизация");

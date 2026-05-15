@@ -146,4 +146,39 @@ class SearchTest extends BaseTest {
         assertFalse(results.getParsedPrices().isEmpty(),
                 "После сортировки должны отображаться товары с распознанными ценами");
     }
+
+    @ParameterizedTest(name = "TC-10 Бессмысленный запрос показывает сообщение об отсутствии результатов [{0}]")
+    @MethodSource("browsers")
+    void nonsenseQueryShowsNoResults(String browser) {
+        setup(browser);
+
+        SearchResultsPage results = new MainPage(driver).open().search(".....");
+
+        assertTrue(results.hasNoResultsOrError(),
+                "Поиск по запросу '.....' должен показать сообщение об отсутствии результатов или страницу ошибки");
+    }
+
+    @ParameterizedTest(name = "TC-11 фильтр 20000-30000 руб [{0}]")
+    @MethodSource("browsers")
+    void priceFilterShowsOnlyProductsInRange(String browser) {
+        setup(browser);
+
+        int priceFrom = 20_000;
+        int priceTo   = 30_000;
+        int margin    = 5_000;
+
+        SearchResultsPage results = new MainPage(driver).open().search("ноутбук");
+        results.waitForResults();
+        assumeTrue(results.hasPriceFilter(), "Фильтр по цене недоступен на странице");
+
+        results.setPriceRange(priceFrom, priceTo);
+
+        List<Integer> prices = results.getParsedPrices();
+        assertFalse(prices.isEmpty(),
+                "После применения фильтра должны отображаться товары");
+        int lo = priceFrom - margin;
+        int hi = priceTo + margin;
+        assertTrue(prices.stream().allMatch(p -> p >= lo && p <= hi),
+                "Найдены цены вне диапазона [" + lo + "-" + hi + "]. Все цены: " + prices);
+    }
 }

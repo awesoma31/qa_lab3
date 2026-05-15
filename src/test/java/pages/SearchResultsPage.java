@@ -2,6 +2,7 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,6 +38,17 @@ public class SearchResultsPage extends BasePage {
             " or contains(normalize-space(.),'Ничего не найдено')" +
             " or contains(normalize-space(.),'не найден')]"
     );
+    private static final By PAGE_ERROR = By.xpath(
+            "//*[contains(normalize-space(.),'что-то пошло не так')" +
+            " or contains(normalize-space(.),'Что-то пошло не так')" +
+            " or contains(normalize-space(.),'что то пошло не так')" +
+            " or contains(normalize-space(.),'Произошла ошибка')" +
+            " or contains(normalize-space(.),'произошла ошибка')" +
+            " or //*[@data-auto='error-page']" +
+            " or //*[contains(@class,'error-page')]" +
+            " or //*[contains(@class,'ErrorPage')]" +
+            "]"
+    );
     private static final By PRICES = By.xpath(
             "//span[@data-auto='mainPrice']" +
             " | //*[@data-auto='snippet-price-current']" +
@@ -64,6 +76,18 @@ public class SearchResultsPage extends BasePage {
             "//label[contains(normalize-space(.),'Доставка')]" +
             " | //button[contains(normalize-space(.),'Доставка')]"
     );
+    private static final By PRICE_FROM_INPUT = By.xpath(
+            "//input[@id='glpricefrom']" +
+            " | //input[contains(@id,'pricefrom') or contains(@name,'pricefrom')]" +
+            " | //input[@data-auto='filter-range-glprice-1']" +
+            " | //div[contains(@data-auto,'filter-price') or contains(@data-auto,'glprice')]//input[1]"
+    );
+    private static final By PRICE_TO_INPUT = By.xpath(
+            "//input[@id='glpriceto']" +
+            " | //input[contains(@id,'priceto') or contains(@name,'priceto')]" +
+            " | //input[@data-auto='filter-range-glprice-2']" +
+            " | //div[contains(@data-auto,'filter-price') or contains(@data-auto,'glprice')]//input[2]"
+    );
 
     public SearchResultsPage(WebDriver driver) {
         super(driver);
@@ -74,6 +98,18 @@ public class SearchResultsPage extends BasePage {
             wait.until(ExpectedConditions.or(
                     ExpectedConditions.presenceOfElementLocated(PRODUCT_CARDS),
                     ExpectedConditions.presenceOfElementLocated(NO_RESULTS)
+            ));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean hasNoResultsOrError() {
+        try {
+            wait.until(ExpectedConditions.or(
+                    ExpectedConditions.presenceOfElementLocated(NO_RESULTS),
+                    ExpectedConditions.presenceOfElementLocated(PAGE_ERROR)
             ));
             return true;
         } catch (Exception e) {
@@ -161,6 +197,38 @@ public class SearchResultsPage extends BasePage {
             return url.replaceAll("([?&])how=[^&]*", "$1how=dprice");
         }
         return url + (url.contains("?") ? "&" : "?") + "how=dprice";
+    }
+
+    public boolean hasPriceFilter() {
+        return isPresent(PRICE_FROM_INPUT);
+    }
+
+    public SearchResultsPage setPriceRange(int from, int to) {
+        driver.get(priceRangeUrl(from, to));
+        sleep(1);
+        waitForResults();
+        sleep(1);
+        try {
+            wait.until(d -> {
+                try {
+                    return !d.findElements(PRICES).isEmpty();
+                } catch (StaleElementReferenceException e) {
+                    return false;
+                }
+            });
+        } catch (Exception ignored) {}
+        sleep(1);
+        return this;
+    }
+
+    private void sleep(int seconds) {
+        try { Thread.sleep(seconds * 1_000L); } catch (InterruptedException ignored) {}
+    }
+
+    private String priceRangeUrl(int from, int to) {
+        String url = getUrl();
+        String params = "pricefrom=" + from + (to > 0 ? "&priceto=" + to : "");
+        return url + (url.contains("?") ? "&" : "?") + params;
     }
 
     public boolean hasDeliveryFilter() {
