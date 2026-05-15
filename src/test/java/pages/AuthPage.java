@@ -25,22 +25,22 @@ public class AuthPage extends BasePage {
             " | //input[@name='phone' or @id='phone']" +
             " | //input[contains(@autocomplete,'tel')]" +
             " | //input[contains(@placeholder,'(000)000-00-00')]" +
-            " | //input[contains(@placeholder,'\u0422\u0435\u043B\u0435\u0444\u043E\u043D')]" +
-            " | //input[contains(@placeholder,'\u0442\u0435\u043B\u0435\u0444\u043E\u043D')]"
+            " | //input[contains(@placeholder,'Телефон')]" +
+            " | //input[contains(@placeholder,'телефон')]"
     );
     private static final By PHONE_FIELD = By.xpath(
             "//*[@id='app']/div[2]/div/form/div[2]/div[1]/div/div/div/div/span[2]" +
-            " | //label[contains(normalize-space(.),'\u0422\u0435\u043B\u0435\u0444\u043E\u043D') or contains(normalize-space(.),'\u0442\u0435\u043B\u0435\u0444\u043E\u043D')]"
+            " | //label[contains(normalize-space(.),'Телефон') or contains(normalize-space(.),'телефон')]"
     );
     private static final By USERNAME_INPUT = By.xpath(
-            "//*[@id='react-aria886129763-\u00ABr1e\u00BB']" +
+            "//*[@id='react-aria886129763-«r1e»']" +
             " | //input[starts-with(@id,'react-aria') and contains(@id,'r1e')]" +
             " | //input[@name='login' or @id='passp-field-login']" +
             " | //input[@type='email' or @type='text']" +
             " | //input[contains(@placeholder,'Login')]" +
             " | //input[contains(@placeholder,'email')]" +
-            " | //input[contains(@placeholder,'\u041B\u043E\u0433\u0438\u043D')]" +
-            " | //input[contains(@placeholder,'\u043B\u043E\u0433\u0438\u043D')]"
+            " | //input[contains(@placeholder,'Логин')]" +
+            " | //input[contains(@placeholder,'логин')]"
     );
     private static final By LOGIN_INPUT = By.xpath(
             "//input[@name='login' or @id='passp-field-login' or @type='email' or @type='text']"
@@ -54,29 +54,29 @@ public class AuthPage extends BasePage {
 
     private static final By MORE_BUTTON = By.xpath(
             "//button[contains(normalize-space(.),'More')]" +
-            " | //button[contains(normalize-space(.),'\u0415\u0449\u0451')]" +
-            " | //button[contains(normalize-space(.),'\u0415\u0449\u0435')]" +
-            " | //a[contains(normalize-space(.),'\u0415\u0449\u0451')]" +
-            " | //a[contains(normalize-space(.),'\u0415\u0449\u0435')]" +
-            " | //*[@role='button' and (contains(normalize-space(.),'\u0415\u0449\u0451') or contains(normalize-space(.),'\u0415\u0449\u0435'))]"
+            " | //button[contains(normalize-space(.),'Ещё')]" +
+            " | //button[contains(normalize-space(.),'Еще')]" +
+            " | //a[contains(normalize-space(.),'Ещё')]" +
+            " | //a[contains(normalize-space(.),'Еще')]" +
+            " | //*[@role='button' and (contains(normalize-space(.),'Ещё') or contains(normalize-space(.),'Еще'))]"
     );
     private static final By CREATE_ID_FOR_MYSELF = By.xpath(
-            "//a[contains(normalize-space(.),'\u0421\u043E\u0437\u0434\u0430\u0442\u044C ID')]" +
-            " | //button[contains(normalize-space(.),'\u0421\u043E\u0437\u0434\u0430\u0442\u044C ID')]" +
+            "//a[contains(normalize-space(.),'Создать ID')]" +
+            " | //button[contains(normalize-space(.),'Создать ID')]" +
             " | //*[starts-with(@id,'react-aria') and contains(@id,'r8')]//span" +
             " | //*[starts-with(@id,'react-aria')]//span[contains(normalize-space(.),'Create an ID for yourself')]"
     );
     private static final By LOGIN_WITH_USERNAME = By.xpath(
             "//*[starts-with(@id,'react-aria')]//span[contains(normalize-space(.),'Log in with username')]" +
-            " | //*[starts-with(@id,'react-aria')]//span[contains(normalize-space(.),'\u0412\u043E\u0439\u0442\u0438 \u043F\u043E \u043B\u043E\u0433\u0438\u043D\u0443')]" +
+            " | //*[starts-with(@id,'react-aria')]//span[contains(normalize-space(.),'Войти по логину')]" +
             " | //button[contains(normalize-space(.),'Log in with username')]" +
-            " | //button[contains(normalize-space(.),'\u0412\u043E\u0439\u0442\u0438 \u043F\u043E \u043B\u043E\u0433\u0438\u043D\u0443')]" +
+            " | //button[contains(normalize-space(.),'Войти по логину')]" +
             " | //a[contains(normalize-space(.),'Log in with username')]" +
-            " | //a[contains(normalize-space(.),'\u0412\u043E\u0439\u0442\u0438 \u043F\u043E \u043B\u043E\u0433\u0438\u043D\u0443')]"
+            " | //a[contains(normalize-space(.),'Войти по логину')]"
     );
     private static final By NEXT_OR_SUBMIT = By.xpath(
-            "//button[contains(normalize-space(.),'\u0414\u0430\u043B\u0435\u0435')]" +
-            " | //button[contains(normalize-space(.),'\u041F\u0440\u043E\u0434\u043E\u043B\u0436\u0438\u0442\u044C')]" +
+            "//button[contains(normalize-space(.),'Далее')]" +
+            " | //button[contains(normalize-space(.),'Продолжить')]" +
             " | //button[contains(normalize-space(.),'Next')]" +
             " | //button[contains(normalize-space(.),'Continue')]" +
             " | //button[@type='submit']"
@@ -88,13 +88,13 @@ public class AuthPage extends BasePage {
             " | //*[contains(@class,'invalid') and normalize-space(.)!='']" +
             " | //*[contains(@id,'error') and normalize-space(.)!='']" +
             " | //*[contains(normalize-space(.),'Invalid phone number format')]" +
-            " | //*[contains(normalize-space(.),'\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u044B\u0439 \u0444\u043E\u0440\u043C\u0430\u0442 \u043D\u043E\u043C\u0435\u0440\u0430')]" +
+            " | //*[contains(normalize-space(.),'Недопустимый формат номера')]" +
             " | //*[starts-with(@id,'react-aria') and contains(@id,'r28')]"
     );
     private static final By SMS_CODE = By.xpath(
             "//input[@name='code' or @type='tel' or @inputmode='numeric']" +
-            " | //*[contains(normalize-space(.),'\u043A\u043E\u0434') or contains(normalize-space(.),'\u041A\u043E\u0434')]" +
-            " | //*[contains(normalize-space(.),'SMS') or contains(normalize-space(.),'\u0441\u043C\u0441')]"
+            " | //*[contains(normalize-space(.),'код') or contains(normalize-space(.),'Код')]" +
+            " | //*[contains(normalize-space(.),'SMS') or contains(normalize-space(.),'смс')]"
     );
     private static final By RESEND_BUTTON = By.xpath(
             "//button[contains(normalize-space(.),'Resend')]" +

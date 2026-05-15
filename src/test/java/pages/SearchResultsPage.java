@@ -2,7 +2,6 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -245,5 +244,19 @@ public class SearchResultsPage extends BasePage {
                 .filter(p -> !p.isEmpty())
                 .map(Integer::parseInt)
                 .toList();
+    }
+
+    public String getPricesDebugInfo() {
+        List<String> titles = getProductTitles();
+        List<Integer> prices = getParsedPrices();
+        StringBuilder sb = new StringBuilder();
+        int count = Math.min(titles.size(), prices.size());
+        for (int i = 0; i < count; i++) {
+            sb.append(prices.get(i)).append(" — ").append(titles.get(i)).append("\n");
+        }
+        for (int i = count; i < prices.size(); i++) {
+            sb.append(prices.get(i)).append(" — (без названия)\n");
+        }
+        return sb.toString();
     }
 }
