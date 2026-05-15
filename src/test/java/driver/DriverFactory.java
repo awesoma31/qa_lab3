@@ -59,7 +59,6 @@ public class DriverFactory {
         File chromeProfile = new File(PROFILES_DIR, "chrome");
         if (useProfile && chromeProfile.exists()) {
             try {
-                // Chrome блокирует user-data-dir — копируем профиль во временную папку
                 Path tempDir = copyToTemp(chromeProfile.toPath());
                 opts.addArguments(
                         "--user-data-dir=" + tempDir.toAbsolutePath(),
